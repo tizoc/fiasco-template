@@ -1,0 +1,12 @@
+% macro :input, type: 'text', value: '', size: 20 do |name, type, value, size|
+  <input type="{{type}}" name="{{name}}" value="{{value}}" size="{{size}}">
+% end
+% macro :label, required: false do |text, required|
+  <label>{{text}}{% if required %}<span class=required>*</span>{% end %}</label>
+% end
+% macro :field, type: 'text', required: false, lbl: nil do |type, name, lbl, required|
+  <div class=field>
+    % label text: lbl || name.gsub(/[-_]/, ' ').capitalize, required: required
+    % input name: name, type: type
+  </div>
+% end

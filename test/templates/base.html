@@ -1,0 +1,10 @@
+<!doctype html>
+<html>
+  <head><title>{% yield_block('title') do %}My Site{% end %}</title></head>
+  <body class="{% yield_block('body_classes') %}">
+    <div id=wrapper>
+      <h1>{% yield_block('title') %}</h1>
+      % yield_block('contents')
+    </div>
+  </body>
+</html>
