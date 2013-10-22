@@ -80,7 +80,49 @@ Code lines remove all preceding whitespace up to (and including) the nearest new
 
 # Template Inheritance
 
-TODO
+Template inheritance lets you define "skeleton" templates with holes to be overriden or extended by child templates (templates that are declared as "extending" a base template).
+
+First the definition of the template that will be used as the base:
+
+`views/base.html`
+
+```html
+<!doctype html>
+<html>
+  <head><title>{% yield_block('title') do %}My Site{% end %}</title></head>
+  <body class="{% yield_block('body_classes') %}">
+    <div id=wrapper>
+      <h1>{% yield_block('title') %}</h1>
+      % yield_block('contents')
+    </div>
+  </body>
+</html>
+```
+
+Each `yield_block` invocation defines a named block hole in the template that can be referenced in inheriting templates. An optional block can be passed to define the default contents of the block in case the child template doesn't define the block contents (or to use in calls to `superblock` in child templates to include the contents of the parent template)
+
+A *"home"* template that inherits from base is defined like this:
+
+`views/home.html`
+
+```html
+% extends 'base'
+
+{% block('title') do %}{% superblock %} -- Homepage{% end %}
+% block('contents') do
+  <div class=main>
+    <h2>This is the homepage</h2>
+  </div>
+% end
+```
+
+The call to `extends` says that this template inherits from a template that was registered under the name *"base"*. The call to `block('title')` defines the contents of the `'title'` block that was declared by the *"base"* template. It calls `superblock` and appends `"-- Homepage"` to the block. The result of this is `"My Site -- Homepage"`.
+
+Because `'title'` was declared twice on the parent template (first for the `<title>` tag, and then for `<h1>`) both places are going to be filled with this value.
+
+On the next line, the contents for the `contents` block are defined, this time without calling `superblock` (which would be meaningless anyway because no default block was provided for the `contents` block. The `body_classes` block is left undefined, and defaults to being empty.
+
+Inheritance can be arbitrarily deep, new blocks can be defined with `yield_block` in `views/home.html` and have other templates inherit from it. Inheriting templates can even declare contents for blocks that *"home"* template is filling with contents and access to what is defined in *"home"* with calls to `superblock` in the same way *"home"* access to block contents defined in *"base"*.
 
 # Macros
 
@@ -138,6 +180,6 @@ After loading a macros file, the macros defined on tha file will be available fo
 
 Arguments are all passed by name
 
-# Examples
+# More Examples
 
 **TODO**
