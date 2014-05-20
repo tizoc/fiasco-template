@@ -81,7 +81,7 @@ EOS
       diff = locals.keys - seen_variables
 
       unless diff.empty?
-        seen_variables += diff
+        seen_variables.concat(diff)
         @compiled.delete(name)
       end
 
